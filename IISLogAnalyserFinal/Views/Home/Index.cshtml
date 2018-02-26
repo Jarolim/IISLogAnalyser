@@ -1,0 +1,35 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<app asp-prerender-module="ClientApp/dist/main-server">Loading...</app>
+
+<script src="~/dist/vendor.js" asp-append-version="true"></script>
+@section scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="~/dist/main-client.js" asp-append-version="true"></script>
+}
+
+<script>
+    function fileupload(filename) {
+        debugger;
+        var inputfile = document.getElementById(filename);
+        var files = inputfile.files;
+        var fdata = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            fdata.append("files", files[i]);
+        }
+        $.ajax(
+            {
+                url:"/UploadMultiple",
+                data: fdata,
+                processData: false,
+                contentType: false,
+                type: "POST",
+                success: function (data) {
+                    location.reload();
+                }
+
+            });
+    }
+</script>
