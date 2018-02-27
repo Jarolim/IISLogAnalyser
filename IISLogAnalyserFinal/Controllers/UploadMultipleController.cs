@@ -35,22 +35,10 @@ namespace IISLogAnalyserFinal.Controllers
         {
             foreach (IFormFile file in files)
             {
-
                 string filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
 
                 if (filename.EndsWith(".log") || filename.EndsWith(".text"))
                 {
-
-
-                    //var fileContents = file.OpenReadStream();
-
-                    // var result = string.Empty;
-                    // using (var reader = new StreamReader(file.OpenReadStream()))
-                    // {
-                    //     string[] lines = reader.ReadToEnd();
-                    //     result = reader.ReadToEnd();
-                    // }
-
                     var lines = new List<string>();
                     using (var reader = new StreamReader(file.OpenReadStream()))
                     {
@@ -58,8 +46,6 @@ namespace IISLogAnalyserFinal.Controllers
                             lines.Add(reader.ReadLine());
                     }
 
-
-                    Dictionary<DateTime, List<string>> linesInDictionary = new Dictionary<DateTime, List<string>>();
                     Dictionary<DateTime, List<IISLogProperties>> linesInDictionaryReal = new Dictionary<DateTime, List<IISLogProperties>>();
                     DateTime currentKeyDate = new DateTime();
                     List<string> lineValues = new List<string>();
@@ -71,9 +57,9 @@ namespace IISLogAnalyserFinal.Controllers
                     var k = 0;
                     var count = lines.Count;
                     var fieldMap = (IISLogPropertiesFieldMap)null;
+
                     foreach (string line in lines)
                     {
-
                         // Use a tab to indent each line of the file.
                         if (line.StartsWith("#Fields"))
                         {
@@ -108,11 +94,9 @@ namespace IISLogAnalyserFinal.Controllers
                         if (dateChanged && isLastItem)
                         {
                             dateChanged = false;
-                            linesInDictionary.Add(currentKeyDate, lineValues);
+                            //linesInDictionary.Add(currentKeyDate, lineValues);
                             linesInDictionaryReal.Add(currentKeyDate, lineValuesReal);
-                            Console.WriteLine(lineValues.Count);
                             isLastItem = false;
-                            // lineValues.Clear();
                         }
 
                         if (line.StartsWith("#Date"))
@@ -128,47 +112,30 @@ namespace IISLogAnalyserFinal.Controllers
                             }
                         }
 
-
-
                         lastLine = line;
 
                         //if its the last item
                         if (++k == count)
                         {
-                            linesInDictionary.Add(currentKeyDate, lineValues);
+                            //linesInDictionary.Add(currentKeyDate, lineValues);
                             linesInDictionaryReal.Add(currentKeyDate, lineValuesReal);
-                            Console.WriteLine(lineValues.Count);
                         }
-
-                        //Console.WriteLine("\t" + line);
-
                     }
-
-                    // Keep the console window open in debug mode.
-
-                    //string IPAdd = "217.170.202.120";
-                    //IPHostEntry hostEntry = Dns.GetHostEntry(IPAdd);
-                    //Console.WriteLine(hostEntry.HostName);
-
-
-                    Console.WriteLine("Hello World!");
-
-
 
                     foreach (var itemDict in linesInDictionaryReal)
                     {
                         foreach (IISLogProperties item in itemDict.Value)
                         {
                             UserData result = listUserData.Find(x => x.IP == item.ClientIpAddress);
-                            //int index = listUserData.FindIndex(x => x.IP == item.ClientIpAddress);
-                            // if (index >= 0)
+
                             if (result != null)
                             {
-                                // element exists, do what you need
+                                // element exists already
                                 result.Hits++;
                             }
                             else
                             {
+                                // create and add new element
                                 UserData user = new UserData();
                                 user.IP = item.ClientIpAddress;
                                 user.Hits = 1;
@@ -178,11 +145,6 @@ namespace IISLogAnalyserFinal.Controllers
                         }
                     }
 
-                    //string filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    //filename = this.EnsureFilename(filename);
-                    //using (FileStream filestream = System.IO.File.Create(this.GetPath(filename)))
-                    //{
-                    //}
                     var json = JsonConvert.SerializeObject(listUserData);
 
                     context.UserData.Add(new UserDataTest() { JSONText = json });
