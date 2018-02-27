@@ -1,12 +1,15 @@
-<h1>Weather forecast</h1>
+<h1>Analyse IIS Log file</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
-<div>Hi upload file here</div>
+<p>This component demonstrates fetching and analysing data from the uploaded file.</p>
+<br />
+<p>You can upload multiple log files and they will be analysed simultaneously.</p>
+<br />
 <form name="form" action="/UploadMultiple" method="post" enctype="multipart/form-data">
 
     <input id="files" type="file" name="files" multiple onchange="fileupload('files');" />
 
 </form>
+<br />
 <!--<p *ngIf="!forecasts"><em>Loading...</em></p>
 
 <table class='table' *ngIf="forecasts">
@@ -44,8 +47,8 @@
         </tr>
     </tbody>
 </table>-->
-
-<p *ngIf="!hitsData"><em>Loading...</em></p>
+<br />
+<p *ngIf="!hitsData"><em>File not uploaded or not in the correct format. Please upload an IIS Log file above</em></p>
 
 <table class='table' *ngIf="hitsData">
     <thead>

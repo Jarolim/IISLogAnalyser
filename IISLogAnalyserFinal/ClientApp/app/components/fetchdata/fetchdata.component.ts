@@ -19,9 +19,13 @@ export class FetchDataComponent {
 
     constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
         http.get(baseUrl + 'api/SampleData/UserDatas').subscribe(result => {
-            debugger;
+
             this.userdatas = result.json() as UserData[];
-            this.hitsData = JSON.parse(result.json().slice(-1)[0].jsonText);
+
+            if (typeof result.json().slice(-1)[0] !== "undefined") {
+                this.hitsData = JSON.parse(result.json().slice(-1)[0].jsonText);
+            }
+
         }, error => console.error(error));
     }
 }

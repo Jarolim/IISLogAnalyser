@@ -12,7 +12,6 @@
 
 <script>
     function fileupload(filename) {
-        debugger;
         var inputfile = document.getElementById(filename);
         var files = inputfile.files;
         var fdata = new FormData();
@@ -28,8 +27,11 @@
                 type: "POST",
                 success: function (data) {
                     location.reload();
+                },
+                error: function (errorThrown) {
+                    alert('request failed');
+                    location.reload();
                 }
-
             });
     }
 </script>
